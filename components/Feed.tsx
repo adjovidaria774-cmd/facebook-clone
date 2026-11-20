@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePost from "@/components/CreatePost";
 import Stories from "@/components/Stories";
 import PostCard, { type Post } from "@/components/PostCard";
+import { loadItem, saveItem } from "@/lib/db";
 
 const INITIAL_POSTS: Post[] = [
   {
@@ -52,6 +53,23 @@ const INITIAL_POSTS: Post[] = [
 
 export default function Feed() {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [loaded, setLoaded] = useState(false);
+
+  // Au démarrage : on relit les publications enregistrées (sinon on garde celles de départ)
+  useEffect(() => {
+    loadItem<Post[]>("posts")
+      .then((saved) => {
+        if (saved) setPosts(saved);
+      })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  // À chaque changement (publier, liker, commenter, supprimer) : on enregistre
+  useEffect(() => {
+    if (!loaded) return;
+    saveItem("posts", posts).catch(() => {});
+  }, [posts, loaded]);
 
   function addPost(text: string, image?: string) {
     const newPost: Post = {
@@ -89,6 +107,9 @@ export default function Feed() {
   function deletePost(id: number) {
     setPosts((prev) => prev.filter((p) => p.id !== id));
   }
+
+  // Écran vide très court pendant la lecture de la base, pour ne pas voir les posts de départ clignoter
+  if (!loaded) return null;
 
   return (
     <div className="space-y-4">

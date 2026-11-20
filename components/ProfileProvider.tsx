@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Camera } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { loadItem, saveItem } from "@/lib/db";
 
 type ProfileContextType = {
   photo: string;
@@ -18,6 +19,15 @@ const ProfileContext = createContext<ProfileContextType>({
 export function ProfileProvider({ children }: { children: ReactNode }) {
   const [photo, setPhoto] = useState("");
 
+  // Au démarrage : on relit la photo enregistrée
+  useEffect(() => {
+    loadItem<string>("photo")
+      .then((saved) => {
+        if (saved) setPhoto(saved);
+      })
+      .catch(() => {});
+  }, []);
+
   // Lit la photo choisie, la recadre en carré (256 px) et la garde en mémoire
   function changePhoto(file: File) {
     if (!file.type.startsWith("image/")) return;
@@ -31,14 +41,18 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         canvas.height = size;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          setPhoto(reader.result as string);
+          const original = reader.result as string;
+          setPhoto(original);
+          saveItem("photo", original).catch(() => {});
           return;
         }
         const side = Math.min(img.width, img.height);
         const sx = (img.width - side) / 2;
         const sy = (img.height - side) / 2;
         ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
-        setPhoto(canvas.toDataURL("image/jpeg", 0.85));
+        const data = canvas.toDataURL("image/jpeg", 0.85);
+        setPhoto(data);
+        saveItem("photo", data).catch(() => {});
       };
       img.src = reader.result as string;
     };
