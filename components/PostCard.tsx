@@ -155,7 +155,7 @@ export default function PostCard({ post, onLike, onComment, onDelete }: Props) {
           <DialogHeader>
             <DialogTitle className="text-[#E4E6EB]">Supprimer cette publication ?</DialogTitle>
             <DialogDescription className="text-[#B0B3B8]">
-              Cette publication sera supprimée définitivement. Cette action ne peut pas être annulée.
+              Cette publication sera supprimée définitivement
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
