@@ -2,15 +2,16 @@
 
 import { useRef, useState } from "react";
 import { Clapperboard, ImagePlus, Video, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MyAvatar, useProfile } from "@/components/ProfileProvider";
 
 type Props = {
   onPublish: (text: string, image?: string) => void;
 };
 
 export default function CreatePost({ onPublish }: Props) {
+  const { user } = useProfile();
   const [text, setText] = useState("");
   const [image, setImage] = useState<string | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -38,15 +39,12 @@ export default function CreatePost({ onPublish }: Props) {
   return (
     <div className="rounded-xl bg-[#242526] p-3">
       <div className="flex items-center gap-2">
-        <Avatar className="size-10">
-          <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="" />
-          <AvatarFallback>T</AvatarFallback>
-        </Avatar>
+        <MyAvatar className="size-10" />
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && publish()}
-          placeholder="Quoi de neuf, Tony ?"
+          placeholder={`Quoi de neuf, ${user.firstName} ?`}
           className="h-10 rounded-full border-0 bg-[#3A3B3C] px-4 text-[#E4E6EB] placeholder:text-[#B0B3B8]"
         />
         <Button

@@ -1,7 +1,7 @@
 import { Bell, Gamepad2, Grid3x3, Home, MessageCircle, Search, Store, Tv, Users } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LogoutButton, MyAvatar } from "@/components/ProfileProvider";
 
 // Même ordre que sur Facebook : accueil, vidéos, marketplace, groupes, jeux
 const NAV_ICONS = [
@@ -71,10 +71,8 @@ export default function Navbar() {
             )}
           </Button>
         ))}
-        <Avatar className="size-10">
-          <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="Mon profil" />
-          <AvatarFallback>T</AvatarFallback>
-        </Avatar>
+        <MyAvatar editable className="size-10" />
+        <LogoutButton />
       </div>
     </header>
   );

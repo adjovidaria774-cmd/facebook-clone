@@ -1,7 +1,8 @@
 import { Bookmark, ChevronDown, Clock, LayoutDashboard, Sparkles, Users, Users2 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { MyAvatar, MyName } from "@/components/ProfileProvider";
 
 const ITEMS = [
   { icon: Sparkles, label: "Meta AI", color: "text-[#A855F7]" },
@@ -12,12 +13,8 @@ const ITEMS = [
   { icon: Users2, label: "Groupes", color: "text-[#2D88FF]" },
 ];
 
-const SHORTCUTS = [
-  { name: "Agence Web Cotonou", img: 5 },
-  { name: "Tony Front-end", img: 12 },
-  { name: "Club Code Bénin", img: 33 },
-  { name: "Studio Atlantique", img: 41 },
-];
+// Pages et groupes de divertissement (pas de photo : on affiche la première lettre)
+const SHORTCUTS = ["Fans de football du Bénin", "Musique afro 24h", "Cuisine du Bénin", "Ciné et séries"];
 
 const itemClass =
   "h-12 w-full justify-start gap-3 rounded-lg p-2 text-[15px] font-medium text-[#E4E6EB] hover:bg-[#3A3B3C] hover:text-[#E4E6EB]";
@@ -27,13 +24,10 @@ export default function LeftSidebar() {
     <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-80 shrink-0 flex-col overflow-y-auto p-2 pr-4 lg:flex">
       <ul className="space-y-1">
         <li>
-          <Button variant="ghost" className={itemClass}>
-            <Avatar className="size-9">
-              <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="" />
-              <AvatarFallback>T</AvatarFallback>
-            </Avatar>
-            Tony
-          </Button>
+          <div className="flex h-12 items-center gap-3 rounded-lg p-2 text-[15px] font-medium text-[#E4E6EB] hover:bg-[#3A3B3C]">
+            <MyAvatar editable badge className="size-9" />
+            <MyName full />
+          </div>
         </li>
         {ITEMS.map(({ icon: Icon, label, color }) => (
           <li key={label}>
@@ -55,14 +49,13 @@ export default function LeftSidebar() {
 
       <h2 className="px-2 pb-1 text-[17px] font-semibold text-[#B0B3B8]">Vos raccourcis</h2>
       <ul className="space-y-1">
-        {SHORTCUTS.map((s) => (
-          <li key={s.name}>
+        {SHORTCUTS.map((name) => (
+          <li key={name}>
             <Button variant="ghost" className={itemClass}>
               <Avatar className="size-9">
-                <AvatarImage src={`https://i.pravatar.cc/80?img=${s.img}`} alt="" />
-                <AvatarFallback>{s.name[0]}</AvatarFallback>
+                <AvatarFallback className="bg-[#0866FF] text-white">{name[0]}</AvatarFallback>
               </Avatar>
-              {s.name}
+              {name}
             </Button>
           </li>
         ))}
